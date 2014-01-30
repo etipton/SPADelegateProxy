@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.homepage = 'http://www.codebestowed.com/SPADelegateProxy'
   s.author   = { 'Eric Tipton' => 'eric.tipton@gmail.com' }
 
-  s.source   = { :git => 'https://github.com/spectappular/SPADelegateProxy', :tag => 'v0.0.1' }
+  s.source   = { :git => 'https://github.com/spectappular/SPADelegateProxy.git', :tag => 'v0.0.1' }
 
   s.description = %{
     A simple and flexible way to combine common obj-c delegate functionalities into one class. See more: http://www.codebestowed.com/SPADelegateProxy
@@ -17,5 +17,6 @@ Pod::Spec.new do |s|
   s.frameworks = 'Foundation'
 
   s.requires_arc    = true
+  s.platform        = :ios, '7.0'
   s.ios.xcconfig    = { 'FRAMEWORK_SEARCH_PATHS' => '$(inherited) "$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"' }
 end
