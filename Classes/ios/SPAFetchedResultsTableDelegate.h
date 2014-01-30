@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "SPADelegate.h"
 
 @protocol SPAFetchedResultsTableOwner
