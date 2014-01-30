@@ -1,0 +1,143 @@
+//
+//  SPATextDelegate.m
+//  Spectappular
+//
+//  Created by Eric Tipton on 1/21/14.
+//  Copyright (c) 2014 Eric Tipton. All rights reserved.
+//
+
+#import "SPATextDelegate.h"
+#import "SPADelegateProxy.h"
+
+@interface SPATextDelegate ()
+
+@property UIScrollView *scrollView;
+@property UIView *activeField; // keeps track of field being acted upon by user
+@property CGFloat keyboardHeight;
+@property UIEdgeInsets origContentInset;
+
+- (void)scrollActiveFieldToVisible;
+
+@end
+
+@implementation SPATextDelegate
+
++ (id)delegateWithViewController:(UIViewController *)viewController
+{
+    return [self delegateWithOverrider:viewController];
+}
+
+- (id)initWithOverrider:(UIViewController *)viewController
+{
+    id proxy = [super initWithOverrider:viewController];
+    self = [proxy targetDelegate];
+    if (self) {
+        _scrollView = (UIScrollView *)viewController.view;
+
+        // register for keyboard notifications
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWasShown:)
+            name:UIKeyboardDidShowNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillBeHidden:)
+            name:UIKeyboardWillHideNotification object:nil];
+    }
+    return proxy;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    self.activeField = textField;
+    [self scrollActiveFieldToVisible];
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    // strip whitespace
+    textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder]; // hide keyboard
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.activeField = nil;
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    self.activeField = textView;
+    [self scrollActiveFieldToVisible];
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView
+{
+    // trim whitespace
+    textView.text = [textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return YES;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
+ replacementText:(NSString *)text
+{
+    if ([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder]; // hide keyboard
+        return NO; // Don't add the final '\n' character
+    }
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    self.activeField = nil;
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = aNotification.userInfo;
+    self.keyboardHeight = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
+    self.origContentInset = self.scrollView.contentInset; // used for scrolling view back to orig pos
+    [self scrollActiveFieldToVisible];
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    self.keyboardHeight = 0;
+
+    UIEdgeInsets contentInsets = self.origContentInset; // expected to be set by keyboardWasShown method
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+}
+
+- (void)scrollActiveFieldToVisible
+{
+    if (self.keyboardHeight <= 0) return;
+
+    CGRect viewRect = self.scrollView.frame;
+    viewRect.size.height -= self.keyboardHeight;
+
+    // change the inset's bottom value to self.keyboardHeight, keep the rest the same
+    UIEdgeInsets origContentInset = self.origContentInset;
+    CGFloat top = origContentInset.top, left = origContentInset.left, right = origContentInset.right;
+    UIEdgeInsets newContentInset = UIEdgeInsetsMake(top, left, self.keyboardHeight, right);
+    self.scrollView.contentInset = newContentInset;
+    self.scrollView.scrollIndicatorInsets = newContentInset;
+
+    // new contentSize is smaller due to presence of keyboard
+    self.scrollView.contentSize = CGSizeMake(viewRect.size.width, viewRect.size.height);
+
+    CGRect absoluteFrame = [self.activeField.superview convertRect:self.activeField.frame toView:self.scrollView];
+    [self.scrollView scrollRectToVisible:absoluteFrame animated:YES];
+}
+
+- (void)dealloc
+{
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+
+@end
