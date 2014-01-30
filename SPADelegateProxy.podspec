@@ -1,36 +1,21 @@
-#
-# Be sure to run `pod spec lint NAME.podspec' to ensure this is a
-# valid spec and remove all comments before submitting the spec.
-#
-# To learn more about the attributes see http://docs.cocoapods.org/specification.html
-#
 Pod::Spec.new do |s|
-  s.name         = "SPADelegateProxy"
-  s.version      = "0.1.0"
-  s.summary      = "A short description of SPADelegateProxy."
-  s.description  = <<-DESC
-                    An optional longer description of SPADelegateProxy
+  s.name     = 'SPADelegateProxy'
+  s.version  = '0.0.1'
+  s.license  = 'MIT'
+  s.summary  = 'A simple and flexible way to combine common obj-c delegate functionalities into one class'
+  s.homepage = 'http://www.codebestowed.com/SPADelegateProxy'
+  s.author   = { 'Eric Tipton' => 'eric.tipton@gmail.com' }
 
-                    * Markdown format.
-                    * Don't worry about the indent, we strip it!
-                   DESC
-  s.homepage     = "http://EXAMPLE/NAME"
-  s.screenshots  = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
-  s.license      = 'MIT'
-  s.author       = { "Eric Tipton" => "eric.tipton@gmail.com" }
-  s.source       = { :git => "http://EXAMPLE/NAME.git", :tag => s.version.to_s }
+  s.source   = { :git => 'https://github.com/spectappular/SPADelegateProxy', :tag => 'v0.0.1' }
 
-  # s.platform     = :ios, '5.0'
-  # s.ios.deployment_target = '5.0'
-  # s.osx.deployment_target = '10.7'
-  s.requires_arc = true
+  s.description = %{
+    A simple and flexible way to combine common obj-c delegate functionalities into one class. See more: http://www.codebestowed.com/SPADelegateProxy
+  }
 
-  s.source_files = 'Classes'
-  s.resources = 'Assets'
+  s.source_files = 'Classes/ios/*.{h,m}'
 
-  s.ios.exclude_files = 'Classes/osx'
-  s.osx.exclude_files = 'Classes/ios'
-  # s.public_header_files = 'Classes/**/*.h'
-  # s.frameworks = 'SomeFramework', 'AnotherFramework'
-  # s.dependency 'JSONKit', '~> 1.4'
+  s.frameworks = 'Foundation'
+
+  s.requires_arc    = true
+  s.ios.xcconfig    = { 'FRAMEWORK_SEARCH_PATHS' => '$(inherited) "$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"' }
 end
