@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'Classes/ios/*.{h,m}'
 
-  s.frameworks = 'Foundation'
+  s.frameworks = 'Foundation', 'CoreData'
 
   s.requires_arc    = true
   s.platform        = :ios, '7.0'
