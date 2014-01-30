@@ -1,5 +1,5 @@
 //
-//  SAPDelegate.h
+//  SPADelegate.h
 //  Spectappular
 //
 //  Created by Eric Tipton on 1/28/14.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SAPDelegate : NSObject
+@interface SPADelegate : NSObject
 
 + (id)delegateWithOverrider:(id)overrider;
 - (id)initWithOverrider:(id)overrider;
