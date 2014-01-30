@@ -1,5 +1,5 @@
 //
-//  SAPDelegateProxy.h
+//  SPADelegateProxy.h
 //  Spectappular
 //
 //  Created by Eric Tipton on 1/27/14.
@@ -10,15 +10,15 @@
 
 // This is a proxy class used for message forwarding to delegates AND/OR overriding classes (e.g. view controllers)
 //
-// All targetDelegate classes should extend SAPDelegate and implement appropriate init methods that are aware of this
+// All targetDelegate classes should extend SPADelegate and implement appropriate init methods that are aware of this
 // proxy. The designated initializer is: - (id)initWithOverrider:(id)overrider
 //
 // Example:
 //
 // ...
-// #import "SAPDelegateProxy.h";
+// #import "SPADelegateProxy.h";
 // ...
-// @implementation SAPTextDelegate
+// @implementation SPATextDelegate
 //
 // + (id)delegateWithViewController:(UIViewController *)viewController
 // {
@@ -39,13 +39,13 @@
 // @end
 //
 // Overriders are expected to "own" this object, although referred to as an instance of the targetDelegate.
-// Instantiation should use the SAPDelegate "delegateWithOverrider" class method (or an extended version)
+// Instantiation should use the SPADelegate "delegateWithOverrider" class method (or an extended version)
 //
 // Example:
 //
 // @interface MyViewController()
 // ...
-// @property SAPTextDelegate *textDelegate; // strong pointer
+// @property SPATextDelegate *textDelegate; // strong pointer
 // ...
 // @end
 //
@@ -54,7 +54,7 @@
 // - (void)viewDidLoad
 // {
 //     [super viewDidLoad];
-//     self.textDelegate = [SAPTextDelegate delegateWithOverrider:self]; // init and retain
+//     self.textDelegate = [SPATextDelegate delegateWithOverrider:self]; // init and retain
 //     self.opponentField.delegate = self.textDelegate; // most UIView delegate properties use weak pointers
 // }
 // ...
@@ -74,7 +74,7 @@
 //     [self doSomethingElse];
 // }
 //
-@interface SAPDelegateProxy : NSObject
+@interface SPADelegateProxy : NSObject
 
 @property id targetDelegate;
 

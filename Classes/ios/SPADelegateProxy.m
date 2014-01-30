@@ -1,14 +1,14 @@
 //
-//  SAPDelegateProxy.m
+//  SPADelegateProxy.m
 //  Spectappular
 //
 //  Created by Eric Tipton on 1/27/14.
 //  Copyright (c) 2014 Eric Tipton. All rights reserved.
 //
 
-#import "SAPDelegateProxy.h"
+#import "SPADelegateProxy.h"
 
-@interface SAPDelegateProxy ()
+@interface SPADelegateProxy ()
 
 @property (weak) id overrider;
 
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation SAPDelegateProxy
+@implementation SPADelegateProxy
 
 + (id)delegateProxyWithOverrider:(id)overrider targetDelegate:(id)delegate
 {
