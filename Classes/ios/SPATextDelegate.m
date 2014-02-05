@@ -99,7 +99,11 @@
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
     NSDictionary* info = aNotification.userInfo;
-    self.keyboardHeight = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
+
+    // UIKeyboardFrameBeginUserInfoKey doesn't take into account orientation changes so we need to convert
+    CGRect keyboardFrame = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    self.keyboardHeight = [self.scrollView.window convertRect:keyboardFrame toView:self.scrollView].size.height;
+
     self.origContentInset = self.scrollView.contentInset; // used for scrolling view back to orig pos
     [self scrollActiveFieldToVisible];
 }
@@ -118,9 +122,6 @@
 {
     if (self.keyboardHeight <= 0) return;
 
-    CGRect viewRect = self.scrollView.frame;
-    viewRect.size.height -= self.keyboardHeight;
-
     // change the inset's bottom value to self.keyboardHeight, keep the rest the same
     UIEdgeInsets origContentInset = self.origContentInset;
     CGFloat top = origContentInset.top, left = origContentInset.left, right = origContentInset.right;
@@ -129,7 +130,8 @@
     self.scrollView.scrollIndicatorInsets = newContentInset;
 
     // new contentSize is smaller due to presence of keyboard
-    self.scrollView.contentSize = CGSizeMake(viewRect.size.width, viewRect.size.height);
+    CGSize viewSize = self.scrollView.frame.size;
+    self.scrollView.contentSize = CGSizeMake(viewSize.width, viewSize.height - self.keyboardHeight);
 
     CGRect absoluteFrame = [self.activeField.superview convertRect:self.activeField.frame toView:self.scrollView];
     [self.scrollView scrollRectToVisible:absoluteFrame animated:YES];
