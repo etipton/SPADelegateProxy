@@ -11,9 +11,8 @@
 @interface SPADelegateProxy ()
 
 @property (weak) id overrider;
-
 // used for allowing VC to execute default functionality (see forwardInvocation method)
-@property BOOL overriderMethodInvoked;
+@property NSMutableSet *overriderInvocations; // (actually a set of NSStringFromSelector() strings)
 
 - (id)initWithOverrider:(id)overrider targetDelegate:(id)delegate;
 
@@ -32,6 +31,7 @@
     if (self) {
         _overrider = overrider;
         _targetDelegate = delegate;
+        _overriderInvocations = NSMutableSet.new;
     }
     return self;
 }
@@ -49,10 +49,12 @@
 // }
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-    if (!self.overriderMethodInvoked && [self.overrider respondsToSelector:anInvocation.selector]) {
-        self.overriderMethodInvoked = YES;
-        [anInvocation invokeWithTarget:self.overrider];
-        self.overriderMethodInvoked = NO;
+    NSString *selectorString = NSStringFromSelector(anInvocation.selector);
+    if (![self.overriderInvocations containsObject:selectorString] &&
+        [self.overrider respondsToSelector:anInvocation.selector]) {
+            [self.overriderInvocations addObject:selectorString];
+            [anInvocation invokeWithTarget:self.overrider];
+            [self.overriderInvocations removeObject:selectorString];
     } else if ([self.targetDelegate respondsToSelector:anInvocation.selector]) {
         [anInvocation invokeWithTarget:self.targetDelegate];
     } else {
@@ -74,10 +76,7 @@
 - (NSMethodSignature*)methodSignatureForSelector:(SEL)selector
 {
     NSMethodSignature* signature = [super methodSignatureForSelector:selector];
-
-    if (!self.overriderMethodInvoked && !signature) {
-        signature = [self.overrider methodSignatureForSelector:selector];
-    }
+    if (!signature) signature = [self.overrider methodSignatureForSelector:selector];
     if (!signature) signature = [self.targetDelegate methodSignatureForSelector:selector];
 
     return signature;

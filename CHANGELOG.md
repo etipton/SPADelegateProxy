@@ -11,3 +11,7 @@ Added SPAFetchedResultsTableViewController
 ## 0.0.3
 
 Bugfix: in TextDelegate, account for orientation changes
+
+## 0.0.4
+
+Bugfix: Don't use a global var for determining if overrider method was called, instead use set of selector strings
