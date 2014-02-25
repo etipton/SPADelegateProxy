@@ -55,7 +55,7 @@
 // {
 //     [super viewDidLoad];
 //     self.textDelegate = [SPATextDelegate delegateWithOverrider:self]; // init and retain
-//     self.opponentField.delegate = self.textDelegate; // most UIView delegate properties use weak pointers
+//     self.textField.delegate = self.textDelegate; // most UIView delegate properties use weak pointers
 // }
 // ...
 // @end
