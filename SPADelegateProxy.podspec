@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
   s.name     = 'SPADelegateProxy'
-  s.version  = '0.0.4'
+  s.version  = '0.0.5'
   s.license  = 'MIT'
   s.summary  = 'A simple and flexible way to combine common obj-c delegate functionalities into one class'
   s.homepage = 'http://www.codebestowed.com/SPADelegateProxy'
   s.author   = { 'Eric Tipton' => 'eric.tipton@gmail.com' }
 
-  s.source   = { :git => 'https://github.com/spectappular/SPADelegateProxy.git', :tag => 'v0.0.4' }
+  s.source   = { :git => 'https://github.com/spectappular/SPADelegateProxy.git', :tag => 'v0.0.5' }
 
   s.description = %{
     A simple and flexible way to combine common obj-c delegate functionalities into one class. See more: http://www.codebestowed.com/SPADelegateProxy

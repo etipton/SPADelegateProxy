@@ -90,6 +90,10 @@
     return YES;
 }
 
+- (void)textViewDidChangeSelection:(UITextView *)textView
+{
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     self.activeField = nil;
@@ -129,12 +133,15 @@
     self.scrollView.contentInset = newContentInset;
     self.scrollView.scrollIndicatorInsets = newContentInset;
 
-    // new contentSize is smaller due to presence of keyboard
-    CGSize viewSize = self.scrollView.frame.size;
-    self.scrollView.contentSize = CGSizeMake(viewSize.width, viewSize.height - self.keyboardHeight);
+    // wait 0.1 seconds before scrolling... this will allow any other triggered animations to run first
+    // (some of those animations may alter the scrollView's frame)
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        CGRect absoluteFrame = [self.activeField.superview convertRect:self.activeField.frame toView:self.scrollView];
+        absoluteFrame.size.height += 1; // allow for a 1pt border
 
-    CGRect absoluteFrame = [self.activeField.superview convertRect:self.activeField.frame toView:self.scrollView];
-    [self.scrollView scrollRectToVisible:absoluteFrame animated:YES];
+        [self.scrollView setContentOffset:CGPointZero animated:NO]; // effectively, scroll to top
+        [self.scrollView scrollRectToVisible:absoluteFrame animated:YES]; // now scroll activeField into view
+    });
 }
 
 - (void)dealloc
